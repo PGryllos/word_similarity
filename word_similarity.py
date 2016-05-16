@@ -74,7 +74,7 @@ y_train = train_dataset['word']
 # train several classifiers
 svm_rbf = SVC(verbose=True).fit(x_train, y_train)
 svm_linear = LinearSVC(verbose=True).fit(x_train, y_train)
-random_forest = RF().fit(x_train, y_train)
+random_forest = RF(n_estimators=1000).fit(x_train, y_train)
 print random_forest
 
 # creating test dataset
