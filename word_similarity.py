@@ -33,6 +33,34 @@ letters_dict = {
         }
 
 
+letters_dict_2 = {
+        'a': 2,
+        'b': 15,
+        'c': 9,
+        'd': 8,
+        'e': 7,
+        'f': 11,
+        'g': 14,
+        'h': 17,
+        'i': 23,
+        'j': 20,
+        'k': 22,
+        'l': 25,
+        'm': 21,
+        'n': 16,
+        'o': 24,
+        'p': 26,
+        'q': 1,
+        'r': 12,
+        's': 5,
+        't': 13,
+        'u': 19,
+        'v': 10,
+        'w': 6,
+        'x': 4,
+        'y': 18,
+        'z': 3,
+        }
 git_commands = ['add', 'commit', 'push', 'pull', 'branch', 'checkout', 'reset']
 
 test = {'add': ['ass', 'aff', 'aad', 'adf', 'addx', 'aas', 'dd', 'aaa'],
@@ -63,7 +91,7 @@ test_dataset = pd.DataFrame(columns=features)
 # creating training dataset
 train_dataset['word'] = git_commands
 train_dataset[features[:-1]] = map(
-        lambda word: from_word_to_values(word, letters_dict, max_word_len),
+        lambda word: from_word_to_values(word, letters_dict_2, max_word_len),
         git_commands)
 
 print train_dataset
@@ -80,7 +108,7 @@ print random_forest
 # creating test dataset
 for command in test:
     for wrong_word in test[command]:
-        row = from_word_to_values(wrong_word, letters_dict, max_word_len)
+        row = from_word_to_values(wrong_word, letters_dict_2, max_word_len)
         row.append(command)
         test_dataset.loc[len(test_dataset)] = row
 
