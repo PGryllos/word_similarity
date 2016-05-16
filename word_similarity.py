@@ -43,6 +43,7 @@ test = {'add': ['ass', 'aff', 'aad', 'adf', 'addx', 'aas', 'dd', 'aaa'],
         'checkout': ['chekkout', 'cjeckout', 'checkou', 'xheckout'],
         'reset': ['rser', 'rese', 'reswt', 'seset', 'resety']}
 
+
 def from_word_to_values(word, letters_dict, max_word_len):
     code = []
     for letter in word:
