@@ -40,7 +40,7 @@ SVM with rbf kernel score: 0.609756097561
 SVM with linear kernel score: 0.439024390244
 Random Forest score: 0.80487804878
 ```
-Have in mind that this method is not able to detect any missalignment on the spelled words. Maybe a dtw approach where each word is considered a time variant signal could improve on those results.
+Have in mind that this method is not able to detect any missalignment on the spelled words. Maybe a dtw approach where each word is considered a time variant signal could improve on those results. Something that must be also noted, and obviously lessens the power of that method, is that although a numeric vector is constructed for each for each word, those numeric values have only categorical meaning. Meaning that for example the value `1` states that there is a letter a in that position. But, the closeness of the values `1` and `2` doesn't not apply to the closeness of `a` and `b`. Maybe an improvement to the existing technique would be to assign values numerically close to letters that tend to be frequently misspelled for one another.
 
 #### how to use
 In the `word_similarity.py` you can see the words I used for the training and the misspelled words I used for measuring the performance of the classifiers. You can define your own set of words you want to use as commands and serialize to a file for use in your application.
