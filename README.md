@@ -1,7 +1,6 @@
 ### How hard can word similarity be (?)
 
 This is just an afternoon project. I tried to prototype something similar to `git's` word suggestion mechanism.
-
 For example, when you accidentally type `git ads -p` instead of `git add -p` and git prompts you this message
 ```
 git: 'ads' is not a git command. See 'git --help'.
@@ -12,6 +11,8 @@ Did you mean this?
 ```
 have you ever wondered how hard can this mechanism be? Simple or not, it seems quite fancy so I though I should give it a try. 
 
+#### note
+To be clear, this not a suggested approach that aims to outperform any well-established technique or anything like that. I didn't use any IR literature or any well known Distance for such problems (like the Levenshtein distance that git uses for that). My aim was to mess around with simple classification techniques intuitively (or non-intuitively) and test how well such a predictor can perform with minimum effort.
 
 #### problem
 So, let's say you have an application that relies on a command-line interaction with the user and you want to provide
