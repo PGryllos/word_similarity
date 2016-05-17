@@ -3,6 +3,10 @@ from sklearn.svm import SVC, LinearSVC
 from sklearn.ensemble import RandomForestClassifier as RF
 from sklearn.externals import joblib
 
+# 1st and most naive case of mapping. No intuition behind the mapping.
+# SVM with rbf kernel score: 0.609756097561
+# SVM with linear kernel score: 0.439024390244
+# Random Forest score: 0.853658536585
 letters_dict_1 = {
         'a': 1,
         'b': 2,
@@ -33,6 +37,11 @@ letters_dict_1 = {
         }
 
 
+# 2nd case of mapping. Trying to give similarly close values to keys that are
+# in similar distances from a starting point (button a).
+# SVM with rbf kernel score: 0.780487804878
+# SVM with linear kernel score: 0.634146341463
+# Random Forest score: 0.853658536585
 letters_dict_2 = {
         'a': 2,
         'b': 15,
@@ -63,6 +72,10 @@ letters_dict_2 = {
         }
 
 
+# 3rd case of mapping. Second try to capture button closeness numerically.
+# SVM with rbf kernel score: 0.780487804878
+# SVM with linear kernel score: 0.658536585366
+# Random Forest score: 0.878048780488
 letters_dict_3 = {
         'a': 2,
         'b': 9,
