@@ -3,7 +3,7 @@ from sklearn.svm import SVC, LinearSVC
 from sklearn.ensemble import RandomForestClassifier as RF
 from sklearn.externals import joblib
 
-letters_dict = {
+letters_dict_1 = {
         'a': 1,
         'b': 2,
         'c': 3,
@@ -61,6 +61,38 @@ letters_dict_2 = {
         'y': 18,
         'z': 3,
         }
+
+
+letters_dict_3 = {
+        'a': 2,
+        'b': 9,
+        'c': 6,
+        'd': 5,
+        'e': 4,
+        'f': 5.5,
+        'g': 8,
+        'h': 8.5,
+        'i': 10.5,
+        'j': 11,
+        'k': 11.5,
+        'l': 14,
+        'm': 12,
+        'n': 9.5,
+        'o': 13,
+        'p': 13.5,
+        'q': 1,
+        'r': 4.5,
+        's': 2.5,
+        't': 7,
+        'u': 10,
+        'v': 6.5,
+        'w': 1.5,
+        'x': 3.5,
+        'y': 7.5,
+        'z': 3,
+        }
+
+
 git_commands = ['add', 'commit', 'push', 'pull', 'branch', 'checkout', 'reset']
 
 test = {'add': ['ass', 'aff', 'aad', 'adf', 'addx', 'aas', 'dd', 'aaa'],
@@ -91,7 +123,7 @@ test_dataset = pd.DataFrame(columns=features)
 # creating training dataset
 train_dataset['word'] = git_commands
 train_dataset[features[:-1]] = map(
-        lambda word: from_word_to_values(word, letters_dict_2, max_word_len),
+        lambda word: from_word_to_values(word, letters_dict_3, max_word_len),
         git_commands)
 
 print train_dataset
@@ -108,7 +140,7 @@ print random_forest
 # creating test dataset
 for command in test:
     for wrong_word in test[command]:
-        row = from_word_to_values(wrong_word, letters_dict_2, max_word_len)
+        row = from_word_to_values(wrong_word, letters_dict_3, max_word_len)
         row.append(command)
         test_dataset.loc[len(test_dataset)] = row
 
@@ -124,4 +156,4 @@ print 'Random Forest score:', random_forest.score(x_test, y_test)
 # two models, which seems normal considering the lack of a well thought method
 # for taking the words to a numeric vector space.
 
-# you can use joblib.dumps to serialize the model of your preference to file
+# you can use joblib.dump to serialize the model of your preference to file
