@@ -1,7 +1,21 @@
 import pandas as pd
+import numpy as np
+import decorator
+
 from sklearn.svm import SVC, LinearSVC
 from sklearn.ensemble import RandomForestClassifier as RF
 from sklearn.externals import joblib
+
+
+@decorator.decorator
+def coroutine(func, *args, **kwargs):
+    cr = func(*args, **kwargs)
+    cr.next()
+    return cr
+
+
+__name__ = 'prototype'
+
 
 # 1st and most naive case of mapping. No intuition behind the mapping.
 # SVM with rbf kernel score: 0.609756097561
@@ -117,56 +131,69 @@ test = {'add': ['ass', 'aff', 'aad', 'adf', 'addx', 'aas', 'dd', 'aaa'],
         'reset': ['rser', 'rese', 'reswt', 'seset', 'resety']}
 
 
-def from_word_to_values(word, letters_dict, max_word_len):
+def from_word_to_values(word, letters_dict, max_len):
     code = []
     for letter in word:
         code.append(letters_dict[letter])
-    for i in range(len(code), max_word_len):
+    for i in range(len(code), max_len):
         code.append(0)
     return code
 
-# +1 to capture the case when the biggest word is spelled with 1 extra letter
-max_word_len = len(max(git_commands, key=len)) + 1
-features = [str(i+1) + '_letter' for i in range(max_word_len)]
-features.append('word')
 
-train_dataset = pd.DataFrame(columns=features)
-test_dataset = pd.DataFrame(columns=features)
+@coroutine
+def detect_word(word_list, letters_dict=letters_dict_3):
+    """Wrapper generator for an interface around the mechanism.
 
-# creating training dataset
-train_dataset['word'] = git_commands
-train_dataset[features[:-1]] = map(
-        lambda word: from_word_to_values(word, letters_dict_3, max_word_len),
-        git_commands)
+    Parameters
+    ----------
+    word_list    : list of words that the predictor must be able to detect
+    letters_dict : (optional) mapping between letters and numbers
 
-print train_dataset
+    Returns
+    -------
+    word_prediction : prediction for the word that input word
 
-x_train = train_dataset[features[:-1]]
-y_train = train_dataset['word']
+    Example
+    -------
+    >>> from word_similarity import detect_word
 
-# train several classifiers
-svm_rbf = SVC(verbose=True).fit(x_train, y_train)
-svm_linear = LinearSVC(verbose=True).fit(x_train, y_train)
-random_forest = RF(n_estimators=1000).fit(x_train, y_train)
-print random_forest
+    >>> detect = detect_word(['add', 'remove', 'install', 'commit'])
+    >>> detect.send('aas')
+    'add'
+    >>> detect.send('asd')
+    'add'
+    >>> detect.send('remo')
+    'remove'
+    >>> detect.send('remec')
+    'remove'
+    >>> detect.send('insnta')
+    'install'
+    >>> detect.send('commt')
+    'commit'
+    >>> detect.send('comasj')
+    'commit'
+    """
+    # build model based on word_list and letter_dict
+    max_len = len(max(word_list, key=len)) + 1
+    features = [str(i+1) + '_letter' for i in range(max_len)]
+    features.append('word')
 
-# creating test dataset
-for command in test:
-    for wrong_word in test[command]:
-        row = from_word_to_values(wrong_word, letters_dict_3, max_word_len)
-        row.append(command)
-        test_dataset.loc[len(test_dataset)] = row
+    train_dataset = pd.DataFrame(columns=features)
 
-x_test = test_dataset[features[:-1]]
-y_test = test_dataset['word']
+    train_dataset['word'] = word_list
+    train_dataset[features[:-1]] = map(
+            lambda word: from_word_to_values(word, letters_dict, max_len),
+            word_list)
 
-# test prediction accuracy
-print 'SVM with rbf kernel score:', svm_rbf.score(x_test, y_test)
-print 'SVM with linear kernel score:', svm_linear.score(x_test, y_test)
-print 'Random Forest score:', random_forest.score(x_test, y_test)
+    x_train = train_dataset[features[:-1]]
+    y_train = train_dataset['word']
 
-# with that training the random forest classifier seems to outperform the other
-# two models, which seems normal considering the lack of a well thought method
-# for taking the words to a numeric vector space.
+    classifier = RF(n_estimators=500).fit(x_train, y_train)
 
-# you can use joblib.dump to serialize the model of your preference to file
+    word_prediction = None
+    while True:
+        word_input = (yield word_prediction)
+        word_input = from_word_to_values(word_input, letters_dict, max_len)
+
+        word_input = np.asarray(word_input).reshape(1, -1)
+        word_prediction = classifier.predict(word_input)[0]
